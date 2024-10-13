@@ -23,6 +23,7 @@ export default function App() {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/product`);
         const resData = await res.json();
+        console.log(resData, 'resData');
         dispatch(setDataProduct(resData));
       } catch (error) {
         toast.error('Unable to fetch product data');
@@ -37,7 +38,7 @@ export default function App() {
       <Toaster />
       <div>
         <Header />
-        <main className="pt-16 bg-slate-100 min-h-[calc(100vh)]">
+        <main className="pt-16 bg-slate-100 min-h-[calc(90vh)]">
           <Outlet />
         </main>
 
