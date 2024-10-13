@@ -86,10 +86,13 @@ export const productSlice = createSlice({
 
                 state.cartItem[index].total = total
             }
+        },
+        clearCart: (state) => {
+            state.cartItem = [];
         }
     }
 })
 
-export const { setDataProduct, addCartItem, deleteCartItem, increaseQty, decreaseQty } = productSlice.actions
+export const { setDataProduct, addCartItem, deleteCartItem, increaseQty, decreaseQty, clearCart } = productSlice.actions
 
 export default productSlice.reducer

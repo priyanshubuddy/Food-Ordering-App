@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 function Header() {
   const [showMenu, setShowMenu] = useState(false);
   
-  const userData = useSelector((state) => state.user);
+  const userData = useSelector((state) => state?.user);
   const cartItemNumber = useSelector((state) => state.product.cartItem);
   const dispatch = useDispatch();
   
@@ -48,19 +48,27 @@ function Header() {
           </div>
           <div className="text-2xl" onClick={handleShowMenu}>
             <div className="cursor-pointer w-10 h-10 rounded-full overflow-hidden drop-shadow-md border-2 border-white bg-gray-200 flex items-center justify-center">
-              {userData.image ? <img src={userData.image} alt="user" className="h-full w-full object-cover" /> : <CiUser className="text-2xl text-gray-500" />}
+              {userData?.image ? <img src={userData?.image} alt="user" className="h-full w-full object-cover" /> : <CiUser className="text-2xl text-gray-500" />}
             </div>
             {showMenu && (
               <div className="absolute mt-2 right-2 bg-white py-2 px-2 shadow-lg drop-shadow-md text-base flex flex-col min-w-[150px] text-center rounded-lg">
-                {userData.email === 'priyanshudubey.dev@gmail.com' && (
+                {userData?.email === 'priyanshudubey.dev@gmail.com' && (
                   <Link to={"newproduct"} className="whitespace-nowrap cursor-pointer px-2 py-2 hover:bg-gray-200 transition duration-300">New product</Link>
                 )}
-                {userData.image ? (
-                  <p className="cursor-pointer text-white bg-red-500 px-2 py-2 rounded-lg hover:bg-red-600 transition duration-300" onClick={handleLogout}>
-                    Logout ({userData.firstName})
-                  </p>
+                {userData?.image ? (
+                  <>
+                    <Link to={"orderhistory"} className="whitespace-nowrap cursor-pointer px-2 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 shadow-md">
+                      Your Orders
+                    </Link>
+                    <p className="cursor-pointer text-white bg-red-500 px-2 py-2 rounded-lg hover:bg-red-600 transition duration-300 shadow-md mt-2" onClick={handleLogout}>
+                      Logout ({userData?.firstName})
+                    </p>
+                  </>
                 ) : (
-                  <Link to={"login"} className="whitespace-nowrap cursor-pointer px-2 py-2 hover:bg-gray-200 transition duration-300">Login</Link>
+                  <div className="flex flex-col gap-1" onMouseLeave={handleShowMenu}>
+                    <Link to={"login"} className="whitespace-nowrap cursor-pointer px-2 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300">Login</Link>
+                    <Link to={"signup"} className="whitespace-nowrap cursor-pointer px-2 py-1 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300">Signup</Link>
+                  </div>
                 )}
                 <nav className="text-base md:text-lg flex flex-col md:hidden">
                   <Link to={""} className="hover:text-slate-700 px-2 py-2 hover:bg-gray-200 transition duration-300">Home</Link>

@@ -8,7 +8,7 @@ function CartProduct({id, name, image, category, qty, total, price}) {
 
     return (
         <div className="bg-white p-4 flex flex-col md:flex-row gap-6 rounded-lg shadow-md border border-gray-200">
-            <div className='bg-gray-100 p-4 rounded-lg overflow-hidden flex-shrink-0 w-full md:w-40 h-40'>
+            <div className='bg-gray-100 p-4 rounded-lg overflow-hidden flex-shrink-0 w-full h-50 md:w-40 md:h-40 lg:w-60 lg:h-44'>
                 <img src={image} alt="foods" className='w-full h-full object-cover rounded-md'/>
             </div>
 

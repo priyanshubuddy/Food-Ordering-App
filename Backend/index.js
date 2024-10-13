@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 const { logger, logRequest } = require("./logger");
+const orderModel = require("./schema/orders");
 
 const app = express();
 app.use(cors());
@@ -119,6 +120,77 @@ app.get("/product", async (req, res) => {
     } catch (err) {
         logger.error(err);
         res.status(500).send("Server Error");
+    }
+});
+
+// order section
+// create order
+app.post("/createOrder", async (req, res) => {
+    try {
+        logger.info(req.body);
+
+        // Check for duplicate order
+        const existingOrder = await orderModel.findOne({
+            userId: req.body.userId,
+            "products.productId": { $in: req.body.products.map(product => product.productId) },
+            totalAmount: req.body.totalAmount,
+            "deliveryAddress.name": req.body.deliveryAddress.name,
+            "deliveryAddress.number": req.body.deliveryAddress.number,
+            "deliveryAddress.address": req.body.deliveryAddress.address
+        });
+
+        if (existingOrder) {
+            return res.status(400).send({ message: "Duplicate order detected", alert: false });
+        }
+
+        const data = new orderModel(req.body);
+        await data.save();
+        res.send({ message: "Order created successfully", order: data });
+    } catch (err) {
+        logger.error("Error creating order:", err);
+        res.status(500).send({ message: "Server Error", error: err.message });
+    }
+});
+
+// get orders
+app.get("/orders", async (req, res) => {
+    try {
+        const data = await orderModel.find({});
+        res.send({ message: "Orders fetched successfully", orders: data });
+    } catch (err) {
+        logger.error("Error fetching orders:", err);
+        res.status(500).send({ message: "Server Error", error: err.message });
+    }
+});
+
+// update order status
+app.put("/updateOrder/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { orderStatus } = req.body;
+        const data = await orderModel.findByIdAndUpdate(id, { orderStatus }, { new: true });
+        if (!data) {
+            return res.status(404).send({ message: "Order not found" });
+        }
+        res.send({ message: "Order status updated successfully", order: data });
+    } catch (err) {
+        logger.error("Error updating order status:", err);
+        res.status(500).send({ message: "Server Error", error: err.message });
+    }
+});
+
+// delete order
+app.delete("/deleteOrder/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = await orderModel.findByIdAndDelete(id);
+        if (!data) {
+            return res.status(404).send({ message: "Order not found" });
+        }
+        res.send({ message: "Order deleted successfully" });
+    } catch (err) {
+        logger.error("Error deleting order:", err);
+        res.status(500).send({ message: "Server Error", error: err.message });
     }
 });
 
